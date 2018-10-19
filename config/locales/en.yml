@@ -1,0 +1,33 @@
+en:
+  activerecord:
+    models:
+      spree/sub_save:
+        one: Sub & Save
+        other: Sub & Saves
+      spree/sub_save_item:
+        one: Sub & Save Item
+        other: Sub & Save Items
+      spree/sub_save_failure:
+        one: Sub & Save Failure
+        other: Sub & Save Failures
+
+    attributes:
+      spree/sub_save:
+        start_date: Start Date
+        state: State
+        created_at: Created At
+        user_email: User Email
+        parent_order: Parent Order
+        number: Number
+        name: Name
+
+  spree:
+    sub_save: Sub & Save
+    new_sub_save: New Sub & Save
+
+    subscription_types:
+      sfmc: SFMC
+      sub_save: Sub & Save
+
+    sub_save_activities:
+      line_item_changed: 'line item %{variant_name} #%{variant_sku}'

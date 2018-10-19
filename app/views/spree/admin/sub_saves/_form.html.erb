@@ -1,0 +1,9 @@
+<div data-hook="admin_user_form_fields" class="row">
+  <div class="col-md-6">
+    <%= f.field_container :email, class: ['form-group'] do %>
+      <%= f.label :email, Spree.t(:email) + '*' %>
+      <%= f.email_field :email, class: 'form-control required' %>
+      <%= f.error_message_on :email %>
+    <% end %>
+  </div>
+</div>

@@ -1,0 +1,54 @@
+<div class="row">
+  <div class="col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h1 class="panel-title">Un-resolved Failures</h1>
+      </div>
+
+      <table class="table" id="listing_orders">
+        <thead>
+          <tr>
+            <th>Related Order</th>
+            <th>Happened At</th>
+            <th>Errors</th>
+
+            <th class="actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% order_failures.each do |item| %>
+            <tr>
+              <td>
+                <% if order = item.related_order %>
+                  <a href="<%= edit_admin_order_path(order) %>"><%= order.number %></a>
+                <% end %>
+              </td>
+              <td><%= item.created_at.to_s(:long) %></td>
+              <td>
+                <ul>
+                  <% item.error_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                  <% end %>
+                </ul>
+              </td>
+
+              <td class='actions actions-1'>
+                <% if item.active? %>
+                  <%= link_to_with_icon(
+                    'ok',
+                    'Resolve',
+                    resolve_admin_sub_save_failure_path(item),
+                    {
+                      class: 'btn btn-success btn-sm',
+                      method: :put,
+                    }
+                  ) %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

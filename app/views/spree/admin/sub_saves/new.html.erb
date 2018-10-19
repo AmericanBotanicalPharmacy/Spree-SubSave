@@ -1,0 +1,18 @@
+<% content_for :page_title do %>
+  <%= link_to Spree.t(:sub_save), admin_sub_saves_path %> / New
+<% end %>
+
+<div data-hook="admin_sub_save_new_form_header">
+  <%= render partial: 'spree/admin/shared/error_messages', locals: { target: @object } %>
+</div>
+
+<div data-hook="admin_sub_save_new_form">
+  <%= form_for [:admin, @object], url: spree.admin_sub_saves_url, method: :post do |f| %>
+    <%= render partial: 'form', locals: { f: f } %>
+
+    <div data-hook="admin_sub_save_new_form_buttons">
+      <%= render partial: 'spree/admin/shared/new_resource_links' %>
+    </div>
+  <% end %>
+</div>
+

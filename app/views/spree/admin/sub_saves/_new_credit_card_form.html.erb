@@ -1,0 +1,18 @@
+<div id="card_new_form" class="credit-card-form margint is-hidden">
+  <div class="row">
+    <%= render 'spree/admin/shared/credit_card_fields', param_prefix: 'credit_card' %>
+  </div>
+
+  <% if @sub_save.ship_address_id.present? %>
+    <div class="form-group">
+    <span data-hook="sfmc_use_shipping">
+      <%= check_box_tag 'sfmc_use_shipping', '1', true %>
+      <%= label_tag 'sfmc_use_shipping', 'Billing address same as shipping' %>
+    </span>
+    </div>
+<% end %>
+
+  <div class="row <% if @sub_save.ship_address_id.present? %>is-hidden<% end %>" id="sfmc_billing">
+    <%= render 'spree/admin/shared/bill_address_fields', param_prefix: 'credit_card[bill_address_attributes]' %>
+  </div>
+</div>

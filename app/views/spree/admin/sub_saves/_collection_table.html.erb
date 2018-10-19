@@ -1,0 +1,56 @@
+<table class="table" id="listing_orders" data-hook>
+  <thead>
+    <tr data-hook="admin_orders_index_headers">
+
+      <% I18n.with_options(scope: 'activerecord.attributes.spree/sub_save') do |i18n| %>
+        <th><%= i18n.t(:number) %></th>
+        <th><%= i18n.t(:parent_order) %></th>
+        <th><%= i18n.t(:name) %></th>
+        <th><%= sort_link @search, :start_date, 'Shipment Start Date' %></th>
+        <th><%= i18n.t(:user_email) %></th>
+        <th><%= sort_link @search, :state, i18n.t(:state) %></th>
+        <th><%= sort_link @search, :channel, Spree.t(:channel) %></th>
+      <% end %>
+
+      <th data-hook="admin_orders_index_header_actions" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @sub_saves.each do |item| %>
+      <tr data-hook="admin_orders_index_rows">
+        <td><%= link_to item.number, edit_admin_sub_save_path(item) %></td>
+        <td>
+          <% if item.parent_order %>
+            <a href="<%= edit_admin_order_path(item.parent_order) %>"><%= item.parent_order.number %></a>
+          <% end %>
+        </td>
+        <td><%= item.ship_address&.full_name %></td>
+        <td><%= item.start_date %></td>
+
+        <td>
+          <% if item.user %>
+            <% email = item.email || item.user_email %>
+            <%= link_to email, spree.edit_admin_user_path(item.user) %>
+          <% else %>
+            <%= "#{item.email}" %>
+          <% end %>
+        </td>
+
+        <td><span class="label label-<%= item.state %>"><%= item.state %></span></td>
+        <td><%= item.channel %></td>
+
+        <td class='actions actions-1' data-hook="admin_sub_saves_index_row_actions">
+          <%= link_to_edit_url edit_admin_sub_save_path(item), title: "admin_edit_#{dom_id(item)}", no_text: true %>
+          <% if item.inactive? && item.valid_membership? %>
+            <%= link_to_with_icon(
+              'ok',
+              'Enable',
+              change_state_admin_sub_save_path(item, event: 'enable'),
+              { class: 'btn btn-success btn-sm', method: :put}
+            ) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,48 @@
+<%= render partial: 'nav_tabs', locals: { current: :activities } %>
+
+<% content_for :page_title do %>
+  / <%= Spree::Activity.human_attribute_name(:activities) %>
+<% end %>
+
+<% if @activities.any? %>
+  <div id="sub_save_activities" class="scroll">
+    <table class="table" data-hook>
+      <thead>
+      <tr data-hook="admin_orders_state_changes_headers">
+        <th width="20%"><%= Spree::Activity.human_attribute_name(:name) %></th>
+        <th width="25%"><%= Spree::Activity.human_attribute_name(:change_from) %></th>
+        <th width="25%"><%= Spree::Activity.human_attribute_name(:change_to) %></th>
+        <th width="15%"><%= Spree::Activity.human_attribute_name(:user) %></th>
+        <th width="15%"><%= Spree::Activity.human_attribute_name(:timestamp) %></th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <% @activities.each do |activity| %>
+        <tr>
+          <td><%= activity.name %></td>
+          <td><%= raw activity.change_from %></td>
+          <td><%= raw activity.change_to %></td>
+
+          <td>
+            <% if activity.user %>
+              <% user_login = activity.user.try(:login) || activity.user.try(:email) %>
+              <%= link_to user_login, spree.admin_user_path(activity.user) %>
+            <% end %>
+          </td>
+          <td>
+            <%= pretty_time(activity.created_at) %>
+            <% if activity.created_at != activity.updated_at %>
+              <small><%= Spree::Activity.human_attribute_name(:updated) %>: <%= pretty_time(activity.updated_at) %></small>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% else %>
+  <div class="alert alert-info no-objects-found">
+    No activities yet.
+  </div>
+<% end %>

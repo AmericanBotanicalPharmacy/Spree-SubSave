@@ -1,0 +1,91 @@
+<% content_for :page_title do %>
+  <%= plural_resource_name(Spree::SubSave).upcase %>
+<% end %>
+
+<% content_for :page_actions do %>
+  <%= button_link_to Spree.t(:new_sub_save), new_admin_sub_save_url, class: "btn-success", icon: 'add' %>
+  <%= button_link_to(
+    'Failures',
+    admin_sub_save_failures_url,
+    class: "#{Spree::SubSaveFailure.with_state(:active).any? ? 'btn-danger' : 'btn-info'}",
+    icon: 'list'
+  ) %>
+<% end %>
+
+<% content_for :table_filter do %>
+  <div data-hook="admin_sfmc_sub_saves_index_search">
+    <%= search_form_for [:admin, @search], url: spree.admin_sub_saves_url do |f| %>
+      <div class="row no-padding-bottom">
+        <div class="col-md-6 form-group is-hidden">
+          <%= f.text_field :email_or_number_or_parent_order_number_or_ship_address_firstname_or_ship_address_lastname_or_ship_address_phone_cont, class: 'form-control js-quick-search-target' %>
+        </div>
+      </div>
+
+      <div class="row no-padding-bottom">
+        <div class="col-md-6 form-group">
+          <%= f.label Spree.t(:email) %>
+          <%= f.text_field :email_cont, class: 'form-control' %>
+        </div>
+
+        <div class="col-md-6 form-group">
+          <%= f.label Spree.t(:number) %>
+          <%= f.text_field :number_cont, class: 'form-control' %>
+        </div>
+      </div>
+
+      <div class="row no-padding-bottom">
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= f.label Spree.t(:first_name) %>
+            <%= f.text_field :ship_address_firstname_cont, class: 'form-control' %>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <%= f.label Spree.t(:last_name) %>
+            <%= f.text_field :ship_address_lastname_cont, class: 'form-control' %>
+          </div>
+        </div>
+      </div>
+
+      <div class="row no-padding-bottom">
+        <div class="col-md-6 form-group">
+          <%= f.label Spree.t(:phone) %>
+          <%= f.text_field :ship_address_phone_cont, class: 'form-control' %>
+        </div>
+
+        <div class="col-md-6 form-group">
+          <%= f.label Spree.t(:parent_order_number) %>
+          <%= f.text_field :parent_order_number_cont, class: 'form-control' %>
+        </div>
+      </div>
+
+      <div class="row no-padding-bottom">
+        <div class="col-md-4">
+          <div class="checkbox">
+            <%= label_tag 'q_state_eq' do %>
+              <%= f.check_box :state_eq, {checked: @show_only_active}, 'active', 'inactive' %>
+              Active
+            <% end %>
+          </div>
+        </div>
+      </div>
+
+      <div data-hook="admin_users_index_search_buttons" class="form-actions">
+        <%= button Spree.t(:search), 'search' %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+
+<%= render 'spree/admin/shared/index_table_options', collection: @sub_saves %>
+
+<% if @sub_saves.any? %>
+  <%= render 'collection_table' %>
+<% else %>
+  <div class="alert alert-info no-objects-found">
+    <%= Spree.t(:no_resource_found, resource: plural_resource_name(Spree::SubSave)).upcase %>!
+  </div>
+<% end %>
+
+<%= render 'spree/admin/shared/index_table_options', collection: @sub_saves, simple: true %>

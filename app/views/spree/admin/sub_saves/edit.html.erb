@@ -1,0 +1,129 @@
+<%= render partial: 'nav_tabs', locals: { current: :edit } %>
+
+<%= render partial: 'spree/admin/shared/error_messages', locals: { target: @sub_save } %>
+
+<% if (order_failures = @sub_save.active_failures).present? %>
+  <%= render 'order_failures', order_failures: order_failures %>
+<% end %>
+
+<div class="row">
+  <div class="col-md-6">
+    <%= form_for @sub_save, url: spree.admin_sub_save_url(@sub_save) do |f| %>
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h1 class="panel-title">Basic Info</h1>
+        </div>
+
+        <ul class="list-group">
+          <li class="list-group-item">
+            <div class="row no-padding-bottom">
+              <div class="col-md-4"><strong>Email</strong></div>
+              <div class="col-md-8"><%= @sub_save.email %></div>
+            </div>
+          </li>
+          <li class="list-group-item">
+            <div class="row no-padding-bottom">
+              <div class="col-md-4"><strong>Member Since</strong></div>
+              <div class="col-md-8"><%= @sub_save.created_at.to_date %></div>
+            </div>
+          </li>
+          <% if @sub_save.canceled? %>
+            <li class="list-group-item">
+              <div class="row no-padding-bottom">
+                <div class="col-md-4"><strong>Canceled At</strong></div>
+                <div class="col-md-8"><%= @sub_save.canceled_at.to_date %></div>
+              </div>
+            </li>
+          <% end %>
+          <li class="list-group-item">
+            <div class="row no-padding-bottom">
+              <div class="col-md-4"><strong>Start Date</strong></div>
+              <div class="col-md-8">
+                <%= f.text_field :start_date, value: datepicker_field_value(f.object.start_date), class: 'datepicker form-control', autocomplete: 'off' %>
+              </div>
+            </div>
+          </li>
+          <% if @sub_save.allowing_items_changes? %>
+            <li class="list-group-item">
+              <% if @sub_save.active? %>
+                <div class="row no-padding-bottom">
+                  <div class="col-lg-4">
+                    <%= button 'Update', 'save', 'submit', { class: "lg-btn-slim" } %>
+                  </div>
+
+                  <div class="col-lg-8">
+                    <%= link_to_with_icon(
+                      'delete',
+                      'Cancel Membership',
+                      change_state_admin_sub_save_path(@sub_save, event: 'cancel'),
+                      { class: 'btn btn-danger lg-btn-slim', method: :put}
+                    ) %>
+                  </div>
+                </div>
+              <% elsif @sub_save.inactive? && @sub_save.valid_membership? %>
+                <div class="row no-padding-bottom">
+                  <div class="col-lg-4">
+                    <%= button 'Update', 'save', 'submit', { class: "lg-btn-slim" } %>
+                  </div>
+
+                  <div class="col-lg-8">
+                    <%= link_to_with_icon(
+                      'ok',
+                      'Enable Membership',
+                      change_state_admin_sub_save_path(@sub_save, event: 'enable'),
+                      { class: 'btn btn-success lg-btn-slim', method: :put}
+                    ) %>
+                  </div>
+                </div>
+              <% else %>
+                <div class="row no-padding-bottom">
+                  <div class="col-lg-4">
+                    <%= button 'Update', 'save', 'submit', { class: "lg-btn-slim" } %>
+                  </div>
+                </div>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="col-md-6">
+    <%= render partial: 'select_product' %>
+  </div>
+</div>
+
+<% unless @sub_save.allowing_items_changes? %>
+  <p class="text-danger">There are future shipments for this Sub & Save, please don't change anything for it!</p>
+<% end %>
+
+<%= render partial: 'membership_edit_form' %>
+
+<div data-hook="admin_sub_save_form_fields">
+  <%= form_for @sub_save, url: spree.admin_sub_save_url(@sub_save) do |f| %>
+    <div class="row">
+      <div data-hook="ship_address_wrapper" class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <h1 class="panel-title"><%= Spree.t(:shipping_address) %></h1>
+          </div>
+
+          <div class="panel-body">
+            <%= f.fields_for :ship_address do |ba_form| %>
+              <%= render 'spree/admin/shared/address_form', f: ba_form, type: 'shipping', for_subscription: true %>
+            <% end %>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="col-md-12 form-actions" data-hook="buttons">
+        <%= button 'Update', 'save' %>
+      </div>
+    </div>
+
+  <% end %>
+</div>
+
+<%= render 'notes', sub_save: @sub_save %>

@@ -1,0 +1,74 @@
+<%= render partial: 'nav_tabs', locals: { current: :credit_cards } %>
+
+<% content_for :page_title do %>
+  / <%= Spree.t(:credit_cards) %>
+<% end %>
+
+<%= render partial: 'select_product' %>
+
+<%= render partial: 'membership_edit_form' %>
+
+<div id="credit_cards_form_wrap" class="panel panel-default">
+  <div class="panel-heading">
+    <h1 class="panel-title"><%= Spree.t(:credit_card) %></h1>
+  </div>
+  <div class="panel-body">
+    <%= form_for @sub_save, url: credit_cards_update_admin_sub_save_path(@sub_save), remote: true do |f| %>
+      <fieldset>
+        <% @previous_cards = @sub_save.user_id.present? ? @sub_save.user.credit_cards.saved : [@sub_save.credit_card].compact %>
+
+        <div data-hook="admin_sub_save_credit_card_form_fields">
+          <div class="form-group">
+            <fieldset data-id="credit-card">
+              <div class="form-group" data-hook="previous_cards">
+                <ul class="list-group">
+                  <% if @previous_cards.present? %>
+                    <% @previous_cards.each do |card| %>
+                      <li class="radio">
+                        <label>
+                          <%= radio_button_tag :credit_card_id, card.id, card == @sub_save.credit_card %>
+                          <%= "#{Spree.t("cc_type_labels.#{card.cc_type}")}: #{card.display_number}" %>
+                          <%= "(#{card.bill_address.full_display})"%>
+                        </label>
+                        <br/>
+                        <label>
+                          <%= "EXP: #{card.expiry}"%>
+                        </label>
+                      </li>
+                    <% end %>
+                  <% end %>
+                  <li class="radio">
+                    <label>
+                      <%= radio_button_tag :credit_card_id, 'new', false, { id: "card_new" } %>
+                      <%= Spree.t(:use_new_cc) %> <%= "(#{Spree.t(:replace_old_credit_card)})" unless @sub_save.user_id %>
+                    </label>
+                  </li>
+                </ul>
+              </div>
+
+              <%= render 'new_credit_card_form' %>
+            </fieldset>
+          </div>
+        </div>
+
+        <div class="form-actions" data-hook="buttons">
+          <%= button 'save' %>
+        </div>
+      </fieldset>
+    <% end %>
+  </div>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('[data-hook="admin_sub_save_credit_card_form_fields"] input[type="radio"]').click(function() {
+    if (this.value == 'new') {
+      $('#card_new_form').show();
+    } else {
+      $('#card_new_form').hide();
+    }
+  });
+
+  $('span#bcountry .select2').on('change', function() { update_state('b'); });
+});
+</script>

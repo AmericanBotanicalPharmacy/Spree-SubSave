@@ -1,0 +1,5 @@
+<% if can? :admin, Spree::SubSave %>
+  <ul class="nav nav-sidebar">
+    <%= tab Spree::SubSave, url: spree.admin_sub_saves_url, icon: 'list', label: plural_resource_name(Spree::SubSave) %>
+  </ul>
+<% end %>

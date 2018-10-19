@@ -1,0 +1,45 @@
+<table class="table" id="listing_orders" data-hook>
+  <thead>
+    <tr data-hook="admin_orders_index_headers">
+      <% I18n.with_options(scope: 'activerecord.attributes.spree/order') do |i18n| %>
+        <th><%= i18n.t(:created_at) %></th>
+        <th><%= i18n.t(:completed_at) %></th>
+        <th><%= i18n.t(:ship_date) %></th>
+        <th><%= i18n.t(:number) %></th>
+        <th><%= i18n.t(:payment_state) %></th>
+        <th><%= i18n.t(:shipment_state) %></th>
+        <th><%= i18n.t(:email) %></th>
+        <th><%= i18n.t(:total) %></th>
+      <% end %>
+
+      <th data-hook="admin_orders_index_header_actions" class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @orders.each do |item| %>
+      <tr data-hook="admin_orders_index_rows">
+        <td><%= order_time(item.created_at) %></td>
+        <td><%= order_time(item.completed_at) if item.completed_at %></td>
+        <td><%= item&.ship_date %></td>
+        <td>
+          <a href="<%= edit_admin_order_path(item) %>"><%= item.number %></a>
+        </td>
+        <td><%= item.payment_state %></td>
+        <td><%= item.shipment_state %></td>
+
+        <td>
+          <% if item.user %>
+            <%= link_to item.email, spree.edit_admin_user_path(item.user) %>
+          <% else %>
+            <%= "#{item.email} (Guest)" %>
+          <% end %>
+        </td>
+
+        <td><%= item.total %></td>
+
+        <td class='actions actions-1' data-hook="admin_orders_index_row_actions">
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

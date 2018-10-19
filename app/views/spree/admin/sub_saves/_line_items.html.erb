@@ -1,0 +1,97 @@
+<% if sub_save.line_items.exists? %>
+  <% @frequencies = Spree::SFMCFrequency.active %>
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="clearfix">
+        <h1 class="panel-title d-inline">
+          <%= Spree.t(:sub_save) %>
+        </h1>
+        <span
+          class="btn btn-sm btn-info pull-right toggle-active-items"
+          data-state="active-only"
+          data-target="#sub_save_items_table"
+        >Show All</span>
+      </div>
+    </div>
+    <table class="table table-bordered sub-save-items" data-hook="sub-save-items" id="sub_save_items_table">
+      <thead>
+      <tr>
+        <th colspan="2"><%= Spree.t(:name) %></th>
+        <th class="text-center">Qty</th>
+        <th class="text-center">Price</th>
+        <th class="text-center">Last Shipment</th>
+        <th class="text-center">Stop Shipment on</th>
+        <th class="text-center">Next Shipment Date</th>
+        <th class="text-center">Frequency</th>
+        <th class="orders-actions text-center" data-hook=""></th>
+      </tr>
+      </thead>
+      <tbody>
+      <% sub_save.line_items.each do |item| %>
+        <tr
+          class="line-item <%= 'hidden' unless item.active? %>"
+          id="sub-save-line-item-<%= item.id %>"
+          data-state="<%= item.active_text %>"
+        >
+          <td class="sub-save-line-item-image image text-center">
+            <%= mini_image(item.variant) %>
+          </td>
+          <td class="sub-save-line-item-name text-center">
+            <%= item.variant.name %><br><%= "(" + variant_options(item.variant) + ")" unless item.variant.option_values.empty? %>
+          </td>
+          <td class="sub-save-line-item-qty-show text-center">
+            <%= item.quantity %>
+          </td>
+          <td class="sub-save-line-item-qty-edit is-hidden">
+            <%= number_field_tag :quantity, item.quantity, min: 0, class: "sub-save-line-item-quantity form-control", size: 5 %>
+          </td>
+          <td class="sub-save-line-item-price text-center">
+            <%= Spree::Money.new(item.price, { currency: current_currency }) %>
+          </td>
+          <td class="text-center">
+            <% if (order = item.last_order) %>
+              <%= link_to item.last_order.number, edit_admin_order_path(item.last_order) %>
+              <br/>
+              <%= item.last_order.ship_date_or_completed_date %>
+            <% end %>
+          </td>
+
+          <% if item.one_time_frequency? %>
+            <td class="text-center">
+              <%= item.discontinue_on %>
+            </td>
+          <% else %>
+            <td class="sub-save-line-item-discontinue-on-show text-center">
+              <%= item.discontinue_on %>
+            </td>
+            <td class="sub-save-line-item-discontinue-on-edit is-hidden">
+              <%= text_field_tag :discontinue_on, datepicker_field_value(item.discontinue_on), class: 'datepicker form-control', id: "discontinue_on_#{item.id}" %>
+            </td>
+          <% end %>
+
+          <td class="sub-save-line-item-next-order-date text-center">
+            <%= item.next_order_date %>
+          </td>
+
+          <td class="sub-save-line-item-frequency-show text-center">
+            <%= item.sfmc_frequency&.name %>
+          </td>
+
+          <td class="sub-save-line-item-frequency-edit is-hidden">
+            <%= select_tag :sfmc_frequency_id, options_from_collection_for_select(@frequencies, 'id', 'name', item.sfmc_frequency&.id), class: 'form-control' %>
+          </td>
+
+          <td class="cart-sub-save-line-item-delete actions actions-4 text-center" data-hook="">
+            <% if sub_save.allowing_items_changes? && can?(:update, item) %>
+              <%= link_to_with_icon 'arrow-left', Spree.t('actions.cancel'), "#", class: 'cancel-sub-save-line-item btn btn-default btn-sm', data: {action: 'cancel'}, title: Spree.t('actions.cancel'), style: 'display: none', no_text: true %>
+              <%= link_to_with_icon 'save', Spree.t('actions.save'), "#", class: 'save-sub-save-line-item btn btn-success btn-sm', no_text: true, data: { :'sub-save-line-item-id' => item.id, action: 'save'}, title: Spree.t('actions.save'), style: 'display: none' %>
+              <%= link_to_with_icon 'edit', Spree.t('edit'), "#", class: 'edit-sub-save-line-item btn btn-primary btn-sm', data: {action: 'edit'}, title: Spree.t('edit'), no_text: true %>
+              <%= link_to_with_icon 'delete', Spree.t('delete'), "#", class: 'delete-sub-save-line-item btn btn-danger btn-sm', data: { 'sub-save-line-item-id' => item.id, action: 'remove'}, title: Spree.t('delete'), no_text: true %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

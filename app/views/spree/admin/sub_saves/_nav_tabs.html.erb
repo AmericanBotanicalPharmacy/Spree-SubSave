@@ -1,0 +1,26 @@
+<% content_for :page_title do %>
+  <%= link_to Spree.t(:sub_save), admin_sub_saves_path %> /
+  <%= @object.number %> <span class="label label-<%= @object.state %>"><%= @object.state %></span>
+<% end %>
+
+<% content_for :sidebar do %>
+  <ul class="nav nav-pills nav-stacked" data-hook="admin_order_tabs">
+    <li<%== ' class="active"' if current == :edit %>>
+      <%= link_to_with_icon 'road', Spree.t(:ship_to), spree.edit_admin_sub_save_path(@object) %>
+    </li>
+
+    <li<%== ' class="active"' if current == :credit_cards %>>
+      <%= link_to_with_icon 'credit-card', Spree.t(:payment_method), spree.credit_cards_admin_sub_save_path(@object) %>
+    </li>
+
+    <li<%== ' class="active"' if current == :orders %>>
+      <%= link_to_with_icon 'shopping-cart', Spree.t(:previous_shipments), spree.orders_admin_sub_save_path(@object) %>
+    </li>
+
+    <% if try_spree_current_user.admin? %>
+      <li<%== ' class="active"' if current == :activities %>>
+        <%= link_to_with_icon 'refresh', Spree.t(:activities), spree.activities_admin_sub_save_path(@object) %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>

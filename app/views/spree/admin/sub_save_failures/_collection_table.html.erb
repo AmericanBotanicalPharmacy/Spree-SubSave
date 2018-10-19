@@ -1,0 +1,58 @@
+<table class="table" id="listing_orders">
+  <thead>
+    <tr>
+      <th>Number</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Order</th>
+      <th>Order State</th>
+      <th><%= sort_link @search, :created_at, 'Happened At' %></th>
+      <th><%= sort_link @search, :state, 'State' %></th>
+
+      <th class="actions"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @sub_save_failures.each do |item| %>
+      <% membership = item.membership %>
+      <% order = item.related_order %>
+      <tr>
+        <td><%= link_to membership.number, edit_admin_sub_save_path(membership) %></td>
+        <td><%= link_to membership.email, edit_admin_sub_save_path(membership) %></td>
+        <td><%= membership.phone %></td>
+        <td>
+          <% if order %>
+            <a href="<%= edit_admin_order_path(order) %>"><%= order.number %></a>
+          <% end %>
+        </td>
+        <td>
+          <%= Spree.t("order_state.#{order.state.downcase}") if order %>
+        </td>
+        <td><%= order_time item.created_at %></td>
+
+        <td><span class="label label-<%= item.resolved? ? 'success' : 'danger' %>"><%= item.state %></span></td>
+
+        <td class='actions actions-1'>
+          <%= link_to_with_icon(
+            'show',
+            'Show',
+            edit_admin_sub_save_path(item.sub_save),
+            class: 'btn btn-info btn-sm'
+          ) %>
+
+          <% if item.active? %>
+            <%= link_to_with_icon(
+              'ok',
+              'Resolve',
+              resolve_admin_sub_save_failure_path(item),
+              {
+                class: 'btn btn-success btn-sm',
+                method: :put,
+              }
+            ) %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

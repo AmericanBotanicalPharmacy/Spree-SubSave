@@ -1,0 +1,27 @@
+#sub_save_activities.scroll {
+  overflow-x: scroll;
+  background: linear-gradient(#fff, #fff),
+              radial-gradient(at right, rgba(0, 0, 0, 0.2), transparent 70%),
+              linear-gradient(#fff, #fff),
+              radial-gradient(at left, rgba(0, 0, 0, 0.2), transparent 70%);
+  background-attachment: local, scroll, local, scroll;
+  background-size: 10px 100%;
+  background-position: right, right, left, left;
+  background-repeat: no-repeat;
+}
+
+#sub_save_activities {
+  @media (max-width: 1366px) {
+    .table {
+      font-size: 13px;
+    }
+  }
+
+  @media (max-width: 1200px) {
+    .table {
+      font-size: 12px;
+      table-layout: fixed;
+      width: 800px
+    }
+  }
+}

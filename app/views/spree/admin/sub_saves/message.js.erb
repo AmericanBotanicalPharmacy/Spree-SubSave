@@ -1,0 +1,17 @@
+var errorMessage = <%= @message.to_json.html_safe %>
+
+var redirectPath = '<%= credit_cards_admin_sub_save_path(@sub_save) %>'
+
+if (errorMessage[0] !== 'error') {
+  var $btn = $('#credit_cards_form_wrap .panel-body').find('.btn')
+
+  location.href = redirectPath
+
+  setTimeout(function() {
+    $btn.attr('disabled', true)
+    $btn.text('Redirecting....')
+  })
+
+}
+
+show_flash(errorMessage[0], errorMessage[1], '#credit_cards_form_wrap .panel-body')

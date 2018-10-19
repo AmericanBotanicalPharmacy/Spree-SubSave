@@ -1,0 +1,25 @@
+<%= render partial: 'nav_tabs', locals: { current: :orders } %>
+
+<% content_for :page_title do %>
+  / <%= Spree.t(:shipments) %>
+<% end %>
+
+<div class="row">
+  <div class="col-md-12">
+    <% if can?(:create_shipment, @object) %>
+      <%= button_link_to "Create Shipment", create_shipment_admin_sub_save_path(@object), class: "btn-primary", method: :post, data: { disable_with: 'Wait' } %>
+    <% end %>
+  </div>
+</div>
+
+<%= render 'spree/admin/shared/index_table_options', collection: @orders %>
+
+<% if @orders.any? %>
+  <%= render 'orders_table' %>
+<% else %>
+  <div class="alert alert-info no-objects-found">
+    <%= Spree.t(:no_resource_found, resource: 'shipments') %>!
+  </div>
+<% end %>
+
+<%= render 'spree/admin/shared/index_table_options', collection: @orders, simple: true %>
